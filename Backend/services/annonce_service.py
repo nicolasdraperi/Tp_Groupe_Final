@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 import uuid
-from datetime import datetime
+from datetime import datetime, UTC
 
 from models.annonce import Annonce
 from schemas.annonce import AnnonceCreate, AnnonceUpdate
@@ -14,7 +14,7 @@ def creer_annonce(db: Session, annonce_data: AnnonceCreate, utilisateur_id: str)
         prix=annonce_data.prix,
         categorie=annonce_data.categorie,
         lieu=annonce_data.lieu,
-        dateCreation=datetime.utcnow(),
+        dateCreation=datetime.now(UTC),
         utilisateurId=utilisateur_id,
         active=True,
         latitude=annonce_data.latitude,
@@ -49,7 +49,7 @@ def mettre_a_jour_annonce(db: Session, annonce_id: str, updates: AnnonceUpdate, 
             detail="Vous ne pouvez modifier que vos propres annonces."
         )
 
-    for key, value in updates.dict(exclude_unset=True).items():
+    for key, value in updates.model_dump(exclude_unset=True).items():
         setattr(annonce, key, value)
 
     db.commit()
