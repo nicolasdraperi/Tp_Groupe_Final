@@ -6,14 +6,14 @@ from config.db import Base
 class Annonce(Base):
     __tablename__ = "annonces"
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    titre = Column(String, nullable=False)
-    description = Column(String)
-    prix = Column(DECIMAL)
-    categorie = Column(String)
-    lieu = Column(String)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    titre = Column(String(255), nullable=False)
+    description = Column(String(1000))
+    prix = Column(DECIMAL(10, 2))
+    categorie = Column(String(100))
+    lieu = Column(String(255))
     dateCreation = Column(DateTime, default=datetime.utcnow)
-    utilisateurId = Column(String, ForeignKey("utilisateurs.id"), nullable=False)
+    utilisateurId = Column(String(36), ForeignKey("utilisateurs.id"), nullable=False)
     active = Column(Boolean, default=True)
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)

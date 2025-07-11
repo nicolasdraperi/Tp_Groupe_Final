@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
 
@@ -17,4 +17,13 @@ class UtilisateurOut(UtilisateurBase):
     id: str
     dateCreation: datetime
 
-    model_config = ConfigDict(from_attributes=True)
+    class Config:
+        orm_mode = True
+
+class ConnexionRequest(BaseModel):
+    email: EmailStr
+    motDePasse: str
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str

@@ -1,0 +1,107 @@
+version: "3.8"
+
+services:
+  galera1:
+    image: bitnami/mariadb-galera:latest
+    container_name: galera1
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_GALERA_CLUSTER_NAME: my_galera
+      MARIADB_GALERA_CLUSTER_ADDRESS: gcomm://
+      MARIADB_GALERA_CLUSTER_BOOTSTRAP: "yes"
+      MARIADB_GALERA_ENABLE: "true"
+      MARIADB_ROOT_PASSWORD: galerapass
+      MARIADB_ROOT_HOST: '%'
+      MARIADB_DATABASE: leboncoin
+      MARIADB_GALERA_MARIABACKUP_USER: backup
+      MARIADB_GALERA_MARIABACKUP_PASSWORD: backuppass
+      MARIADB_GALERA_FORCE_SAFETOBOOTSTRAP: "yes"
+    volumes:
+      - galera1_data:/bitnami/mariadb
+    networks:
+      - dbnet
+
+
+  galera2:
+    image: bitnami/mariadb-galera:latest
+    container_name: galera2
+    restart: unless-stopped
+    depends_on:
+      - galera1
+    environment:
+      MARIADB_GALERA_CLUSTER_NAME: my_galera
+      MARIADB_GALERA_CLUSTER_ADDRESS: gcomm://galera1,galera2,galera3
+      MARIADB_GALERA_ENABLE: "true"
+      MARIADB_ROOT_PASSWORD: galerapass
+      MARIADB_ROOT_HOST: '%'
+      MARIADB_GALERA_MARIABACKUP_USER: backup
+      MARIADB_GALERA_MARIABACKUP_PASSWORD: backuppass
+    volumes:
+      - galera2_data:/bitnami/mariadb
+    networks:
+      - dbnet
+
+  galera3:
+    image: bitnami/mariadb-galera:latest
+    container_name: galera3
+    restart: unless-stopped
+    depends_on:
+      - galera1
+    environment:
+      MARIADB_GALERA_CLUSTER_NAME: my_galera
+      MARIADB_GALERA_CLUSTER_ADDRESS: gcomm://galera1,galera2,galera3
+      MARIADB_GALERA_ENABLE: "true"
+      MARIADB_ROOT_PASSWORD: galerapass
+      MARIADB_ROOT_HOST: '%'
+      MARIADB_GALERA_MARIABACKUP_USER: backup
+      MARIADB_GALERA_MARIABACKUP_PASSWORD: backuppass
+    volumes:
+      - galera3_data:/bitnami/mariadb
+    networks:
+      - dbnet
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - dbnet
+
+  #frontend:
+  #  build: ./frontend
+  #  container_name: frontend
+  #  restart: unless-stopped
+  #  ports:
+  #    - "3000:3000"
+  #  networks:
+  #    - appnet
+
+  #backend:
+  #  build: ./backend
+  #  container_name: backend
+  #  restart: unless-stopped
+  #  depends_on:
+  #    - galera1
+  #  environment:
+  #    - DB_HOST=galera1
+  #    - DB_USER=root
+  #    - DB_PASSWORD=galerapass
+  #    - DB_NAME=leboncoin
+  #  ports:
+  #    - "8000:8000"
+  #  networks:
+  #    - dbnet
+  #    - appnet
+
+volumes:
+  galera1_data:
+  galera2_data:
+  galera3_data:
+
+networks:
+  dbnet:
+  appnet:
