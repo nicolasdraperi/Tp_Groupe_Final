@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 
 import jwt
 from fastapi import HTTPException, status
@@ -42,7 +42,8 @@ def creer_utilisateur(db: Session, utilisateur_data: UtilisateurCreate):
         avatarUrl=utilisateur_data.avatarUrl,
         bio=utilisateur_data.bio,
         professionnel=utilisateur_data.professionnel,
-        dateCreation=datetime.utcnow()
+        dateCreation=datetime.now(UTC)
+
     )
     db.add(nouvel_utilisateur)
     db.commit()
@@ -52,7 +53,7 @@ def creer_utilisateur(db: Session, utilisateur_data: UtilisateurCreate):
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    expire = datetime.now(UTC) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
