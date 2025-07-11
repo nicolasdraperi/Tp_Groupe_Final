@@ -14,6 +14,7 @@ import models.alerte
 # Importer tes routers
 from routers import (
     utilisateur_routes,
+    annonce_routes
 )
 
 
@@ -35,8 +36,8 @@ app.add_middleware(
 # Inclure tes routers
 
 app.include_router(utilisateur_routes.router, prefix="/api/utilisateurs", tags=["Utilisateurs"])
-'''
 app.include_router(annonce_routes.router, prefix="/api/annonces", tags=["Annonces"])
+'''
 app.include_router(message_routes.router, prefix="/api/messages", tags=["Messages"])
 app.include_router(favori_routes.router, prefix="/api/favoris", tags=["Favoris"])
 app.include_router(paiement_routes.router, prefix="/api/paiements", tags=["Paiements"])

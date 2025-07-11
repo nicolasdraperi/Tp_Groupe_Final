@@ -16,6 +16,9 @@ class AnnonceBase(BaseModel):
 class AnnonceCreate(AnnonceBase):
     utilisateurId: str
 
+class AnnonceUpdate(AnnonceBase):
+    pass
+
 class AnnonceOut(AnnonceBase):
     id: str
     utilisateurId: str
